@@ -2,17 +2,18 @@ package pages;
 
 import static com.codeborne.selenide.Selenide.$;
 
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.$$x;
+import static driver.EmulatorHelper.closeKeyBoard;
+import static driver.EmulatorHelper.sendKeysAndFind;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
-import driver.EmulatorHelper;
 import io.appium.java_client.MobileBy;
 import io.qameta.allure.Step;
 
+/**
+ * Страница с поиском
+ */
 public class SearchPage extends BasePage {
     private SelenideElement searchField = $(MobileBy.id("searchTv"));
     private SelenideElement searchFieldExpanded = $(MobileBy.id("search_src_text"));
@@ -22,8 +23,8 @@ public class SearchPage extends BasePage {
     @Step("Поиск товара {item}")
     public SearchPage search(String item) {
         searchField.should(Condition.visible).click();
-        EmulatorHelper.sendKeysAndFind(searchFieldExpanded, item);
-        EmulatorHelper.closeKeyBoard();
+        sendKeysAndFind(searchFieldExpanded, item);
+        closeKeyBoard();
         return this;
     }
 

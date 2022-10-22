@@ -2,30 +2,24 @@ package pages;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static helper.LocatorHelper.byResourceId;
-import static helper.LocatorHelper.byText;
+import static driver.EmulatorHelper.androidScrollToAnElementByText;
+import static driver.EmulatorHelper.goBack;
 
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 
-
-import org.checkerframework.checker.units.qual.C;
-import org.openqa.selenium.By;
-import org.openqa.selenium.interactions.touch.TouchActions;
-
-import java.io.File;
 import java.util.List;
 
-import driver.EmulatorDriver;
-import helper.LocatorHelper;
 import io.appium.java_client.MobileBy;
 import io.qameta.allure.Step;
 
 
+/**
+ * Главная страница приложения
+ */
 public class MainPage extends SearchPage {
 
     private SelenideElement catalogButton = $(MobileBy.id("menu_catalog"));
@@ -43,13 +37,13 @@ public class MainPage extends SearchPage {
     @Step("Закрываем открывшееся всплывающее окно")
     public MainPage closePopUp(){
         adPopUp.should(Condition.visible);
-        WebDriverRunner.getWebDriver().navigate().back();
+        goBack();
         return this;
     }
 
     @Step("Проверяем названия категорий в центре экрана {texts}")
     public MainPage checkCategoriesHasTexts(List<String> texts){
-        LocatorHelper.androidScrollToAnElementByText(texts.get(0));
+        androidScrollToAnElementByText(texts.get(0));
         categories.should(CollectionCondition.size(10));
         categories.should(CollectionCondition.textsInAnyOrder(texts));
         return this;

@@ -43,7 +43,7 @@ public class MainMenuTests extends BaseTest {
     @Test
     @Description("Добавляем товар в корзину")
     public void testAddItemToCart(){
-        String searchItem = "twix напиток";
+        String searchItem = "projector";
         SearchPage searchPage = mainPage.closePopUp().search(searchItem);
         String fullName = searchPage.getFirstFoundedFullItemName();
 

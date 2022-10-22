@@ -2,17 +2,19 @@ package pages;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
+import static driver.EmulatorHelper.goBack;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 
 import org.junit.jupiter.api.Assertions;
 
-import driver.EmulatorDriver;
-import driver.EmulatorHelper;
 import io.appium.java_client.MobileBy;
 import io.qameta.allure.Step;
 
+/**
+ * Страница Корзина
+ */
 public class CartPage extends BasePage {
 
     private SelenideElement cartMenuIcon = $(MobileBy.id("menu_profile"));
@@ -26,8 +28,7 @@ public class CartPage extends BasePage {
 
     @Step("Проверяем количество товаров в корзине")
     public CartPage assertItemsCount(Integer count){
-        Assertions.assertEquals(cartMenuIcon.getAttribute("content-desc"),
-                "Корзина, " + count);
+        Assertions.assertTrue(cartMenuIcon.getAttribute("content-desc").contains(String.valueOf(count)));
         return this;
     }
 
@@ -41,7 +42,7 @@ public class CartPage extends BasePage {
     @Step("Закрываем всплывающее окно")
     public CartPage closePop(){
         if($(MobileBy.id("commonBtnSA")).exists()){
-            EmulatorHelper.getDriver().navigate().back();
+            goBack();
         }
         return this;
     }

@@ -10,19 +10,32 @@ import java.io.File;
 
 public class ScreenshotTests extends BaseTest{
 
+    /**
+     * Информация о тестовом методе
+     */
     private TestInfo testInfo;
 
+    /**
+     * Перед каждым тестом инициализация тестовой информации
+     * @param testInfo информация из junit5
+     */
     @BeforeEach
     public void init(TestInfo testInfo) {
         this.testInfo = testInfo;
     }
 
+    /**
+     * Проверка верстки страницы Каталог
+     */
     @Test
     public void testMainCatalogScreenshot(){
         File mainScreenScreenshot = new MainPage().openCatalog().fullPageScreenshot();
         assertScreenshot(mainScreenScreenshot, testInfo.getDisplayName());
     }
 
+    /**
+     * Падающий тест для проверки что в аллюр сохраняется картинка с отличиями
+     */
     @Test
     public void testMainScreenScreenshotFail(){
         File mainScreenScreenshot = new MainPage().fullPageScreenshot();

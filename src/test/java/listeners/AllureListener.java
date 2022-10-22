@@ -6,26 +6,34 @@ import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.OutputType;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
+/**
+ * Кастомный листенер для переопределения логики завершения теста
+ */
 public class AllureListener implements AfterTestExecutionCallback {
-    // Метод прикрепляет скриншот к отчёту allure.
+    /**
+     * Метод добавления скриншота в аллюра отчета через аннотацию
+     * @param screenShot байты скриншотов
+     * @return
+     */
     @Attachment(value = "Page screenshot", type = "image/png")
     public static byte[] saveScreenshot(byte[] screenShot) {
         return screenShot;
     }
 
+    /**
+     * Переопределение логики завершения тестов у juni5
+     * @param context контекст теста
+     */
     @Override
     public void afterTestExecution(ExtensionContext context) {
-        Method testMethod = context.getRequiredTestMethod();
-        String testName = testMethod.getName();
-        boolean testFailed = context.getExecutionException().isPresent();
-        if (testFailed) {
-            if (!testName.contains("Screenshot")) {
-                saveScreenshot(Selenide.screenshot(OutputType.BYTES));
+        Method testMethod = context.getRequiredTestMethod(); //получаем тестовый метод
+        String testName = testMethod.getName(); //получаем название тестового метода
+        boolean testFailed = context.getExecutionException().isPresent();//проверяем упал ли тест
+        if (testFailed) {//если тест упал
+            if (!testName.contains("Screenshot")) {//если название метода не содержит Screenshot
+                saveScreenshot(Selenide.screenshot(OutputType.BYTES)); //добавляем скриншот к упавшему тесту
             }
         }
     }

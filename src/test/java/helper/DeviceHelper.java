@@ -3,82 +3,70 @@ package helper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+/**
+ * Класс помощник для выполнения bash команд
+ */
 public class DeviceHelper {
 
     /**
-     * Чтение в потоке
-     * @param command
-     * @return
+     * Выполняет bash скрипт с гарантированием возрата полной информации из консоли
+     * @param command bash скрипт
+     * @return результат скрипта
      * @throws IOException
      * @throws ExecutionException
      * @throws InterruptedException
      */
     public static String executeSh(String command) throws IOException, ExecutionException, InterruptedException {
-        Process p = Runtime.getRuntime().exec(command);
-        FutureTask<String > future = new FutureTask<>(()->{
-            return new BufferedReader(new InputStreamReader(p.getInputStream()))
-                    .lines().map(Object::toString)
-                    .collect(Collectors.joining("\n"));
+        Process p = Runtime.getRuntime().exec(command);//получаем инстатс терминала и выполняем скрипт
+        FutureTask<String > future = new FutureTask<>(()->{ //создаем FutureTask
+            return new BufferedReader(new InputStreamReader(p.getInputStream())) //читаем поток информации из консоли
+                    .lines().map(Object::toString) //информацию преобразуем в строку
+                    .collect(Collectors.joining("\n")); //все строки собираем в одну с разделением в виде новой строки
         });
-        new Thread(future).start();
-        return future.get();
+        new Thread(future).start(); //запускаем поток
+        return future.get(); //ждем завершения CallBack для получения полной конечной информации из консоли
     }
 
     /**
-     * Чтение стримом
-     * @param command
-     * @return
-     * @throws IOException
-     * @throws InterruptedException
+     * Выполняет bash скрипт через терминал с обработкой exception
+     * Не гарантирует полного получения результата выполнения команды, так как нет обратного Callback
+     * Подходит для выполнения скрипта без возвращения результата
+     * @param command bash команда
+     * @return результат скрипты
      */
-    public static String[] executeBashStreamApi(String command) throws IOException, InterruptedException {
-        Process p = Runtime.getRuntime().exec(command);
-        String[] message = {""};
-        new Thread(()->{
-           new BufferedReader(new InputStreamReader(p.getInputStream())).lines().forEach(x->message[0] += x + "\n");}
-        ).start();
-         p.waitFor();
-         return message;
-    }
-
-    /**
-     * Колхоз
-     * @param command
-     * @return
-     */
-    public static String[] executeBash(String command) {
+    public static String executeBash(String command) {
         Process p;
         try {
-            p = Runtime.getRuntime().exec(command);
+            p = Runtime.getRuntime().exec(command); //получаем инстанс терминала и посылаем скрипт
         } catch (IOException e){
             throw new RuntimeException(e);
         }
-        final String[] message = {""};
+        final String[] message = {""}; //массив с 1 элементом для записи строк из терминала
 
-        new Thread(()->{
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        new Thread(()->{//запускаем новый поток чтобы не было сообщения "Процесс не отвечает", в случае если команда будет выполнятся бесконечно
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));//получаем поток информации
             String line = null;
             while (true){
                 try {
-                    if ((line = input.readLine()) == null) break;
+                    if ((line = input.readLine()) == null) {//читаем строки пока они есть
+                        break;
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                message[0] += line + "\n";
+                message[0] += line + "\n"; //записываем строки в первый элемент массива
             }
-        }).start();
+            System.out.println(message[0]);//выводим в консоль для дебагинга
+        }).start();//стартуем поток
         try {
-            p.waitFor();
+            p.waitFor();//ждем завершения потока
         } catch (InterruptedException e){
             throw new RuntimeException(e);
         }
-        return message;
+        return message[0];
     }
 }

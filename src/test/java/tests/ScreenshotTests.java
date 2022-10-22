@@ -25,7 +25,9 @@ public class ScreenshotTests extends BaseTest{
     }
 
     /**
+     * Запускать первым, чтобы сделать эталон скриншота
      * Проверка верстки страницы Каталог
+     * Надо чтобы в test.properties было значение true у updateScreenshots
      */
     @Test
     public void testMainCatalogScreenshot(){
@@ -35,6 +37,8 @@ public class ScreenshotTests extends BaseTest{
 
     /**
      * Падающий тест для проверки что в аллюр сохраняется картинка с отличиями
+     * Надо чтобы в test.properties было значение false у updateScreenshots
+     * Запускать вторым, чтобы увидеть различия
      */
     @Test
     public void testMainScreenScreenshotFail(){

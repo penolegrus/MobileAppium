@@ -31,7 +31,9 @@ public class ScreenshotTests extends BaseTest{
      */
     @Test
     public void testMainCatalogScreenshot(){
-        File mainScreenScreenshot = new MainPage().openCatalog().fullPageScreenshot();
+        File mainScreenScreenshot = new MainPage().closePopUp()
+                .openCatalog()
+                .fullPageScreenshot();
         assertScreenshot(mainScreenScreenshot, testInfo.getDisplayName());
     }
 
@@ -42,7 +44,8 @@ public class ScreenshotTests extends BaseTest{
      */
     @Test
     public void testMainScreenScreenshotFail(){
-        File mainScreenScreenshot = new MainPage().fullPageScreenshot();
+        File mainScreenScreenshot = new MainPage()
+                .fullPageScreenshot();
         assertScreenshot(mainScreenScreenshot, "testMainCatalogScreenshot()");
     }
 }

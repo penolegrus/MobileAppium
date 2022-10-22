@@ -29,20 +29,21 @@ public class MainPage extends SearchPage {
 
 
     @Step("Открываем каталог в нижнем Меню")
-    public CatalogPage openCatalog(){
+    public CatalogPage openCatalog() {
         catalogButton.should(Condition.visible).click();
         return new CatalogPage();
     }
 
     @Step("Закрываем открывшееся всплывающее окно")
-    public MainPage closePopUp(){
-        adPopUp.should(Condition.visible);
-        goBack();
+    public MainPage closePopUp() {
+        if (adPopUp.exists()) {
+            goBack();
+        }
         return this;
     }
 
     @Step("Проверяем названия категорий в центре экрана {texts}")
-    public MainPage checkCategoriesHasTexts(List<String> texts){
+    public MainPage checkCategoriesHasTexts(List<String> texts) {
         androidScrollToAnElementByText(texts.get(0));
         categories.should(CollectionCondition.size(10));
         categories.should(CollectionCondition.textsInAnyOrder(texts));
@@ -50,12 +51,12 @@ public class MainPage extends SearchPage {
     }
 
     @Step("Проверяем, что кнопка меню 'Главное Меню' выделена синим цветом")
-    public void checkMainMenuButtonIsSelected(){
-         mainMenuIcon.should(Condition.selected);
+    public void checkMainMenuButtonIsSelected() {
+        mainMenuIcon.should(Condition.selected);
     }
 
     @Step("Проверяем, что кнопка меню 'Главное Меню' не выделена синим цветом")
-    public void checkMainMenuButtonIsNotSelected(){
+    public void checkMainMenuButtonIsNotSelected() {
         mainMenuIcon.should(Condition.not(Condition.selected));
     }
 }
